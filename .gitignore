@@ -1,0 +1,7 @@
+!*.go
+!*.mod
+!README.md
+*/.exercism/*
+HELP.md
+HINTS.md
+
