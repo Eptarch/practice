@@ -1,19 +1,33 @@
 package clock
 
-// Define the Clock type here.
+import "fmt"
 
-func New(h, m int) Clock {
-	panic("Please implement the New function")
+type Clock struct {
+    m int
 }
 
 func (c Clock) Add(m int) Clock {
-	panic("Please implement the Add function")
+	c.m = rotate(c.m + m)
+    return c
 }
 
 func (c Clock) Subtract(m int) Clock {
-	panic("Please implement the Subtract function")
+	c.m = rotate(c.m - m)
+    return c
 }
 
 func (c Clock) String() string {
-	panic("Please implement the String function")
+    return fmt.Sprintf("%02d:%02d", c.m / 60 , c.m % 60)
 }
+
+func New(h, m int) Clock {
+    return Clock{ m: rotate(60 * h + m) }
+}
+
+func rotate(m int) int {
+    if m < 0 {
+        return 1440 + m % 1440
+    }
+    return m % 1440
+}
+
