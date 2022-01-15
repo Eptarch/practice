@@ -5,7 +5,7 @@ import (
     "fmt"
 )
 
-// TODO: Define the SillyNephewError type here.
+// Define the SillyNephewError type here.
 type SillyNephewError struct {
     arg int
 }
