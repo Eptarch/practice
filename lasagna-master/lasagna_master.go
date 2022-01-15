@@ -20,9 +20,7 @@ func Quantities(layers []string) (int, float64) {
 }
 
 func AddSecretIngredient(friendsList, myList []string) []string {
-    result := make([]string, len(myList))
-    copy(result, myList)
-    return append(result, friendsList[len(friendsList) - 1])
+    return append(myList[:len(myList) - 1], friendsList[len(friendsList) - 1])
 
 }
 
