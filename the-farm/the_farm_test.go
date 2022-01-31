@@ -73,6 +73,14 @@ func TestDivideFood(t *testing.T) {
 			wantErr:                 nonScaleError,
 		},
 		{
+			description:             "Negative fodder with generic error from the scale is returned",
+			weightFodder:            testWeightFodder{fodder: -10, err: nonScaleError},
+			weightFodderDescription: "-10 fodder, generic error",
+			cows:                    2,
+			wantAmount:              0,
+			wantErr:                 nonScaleError,
+		},
+		{
 			description:             "Scale returns 10 with ErrScaleMalfunction for 2 cows",
 			weightFodder:            testWeightFodder{fodder: 10, err: ErrScaleMalfunction},
 			weightFodderDescription: "10 fodder, ErrScaleMalfunction",
@@ -81,7 +89,7 @@ func TestDivideFood(t *testing.T) {
 			wantErr:                 nil,
 		},
 		{
-			description:             "Scale returns 5 with ErrScaleMalfunction for 10 cows",
+			description:             "Scale returns 1 with ErrScaleMalfunction for 10 cows",
 			weightFodder:            testWeightFodder{fodder: 5, err: ErrScaleMalfunction},
 			weightFodderDescription: "5 fodder, ErrScaleMalfunction",
 			cows:                    10,
@@ -94,7 +102,7 @@ func TestDivideFood(t *testing.T) {
 			weightFodderDescription: "-1 fodder, no error",
 			cows:                    2,
 			wantAmount:              0,
-			wantErr:                 errors.New("Negative fodder"),
+			wantErr:                 errors.New("negative fodder"),
 		},
 		{
 			description:             "Negative fodder with ScaleError",
@@ -102,7 +110,7 @@ func TestDivideFood(t *testing.T) {
 			weightFodderDescription: "-1 fodder, ScaleError",
 			cows:                    2,
 			wantAmount:              0,
-			wantErr:                 errors.New("Negative fodder"),
+			wantErr:                 errors.New("negative fodder"),
 		},
 		{
 			description:             "Zero cows",
@@ -110,7 +118,7 @@ func TestDivideFood(t *testing.T) {
 			weightFodderDescription: "100 fodder, no error",
 			cows:                    0,
 			wantAmount:              0,
-			wantErr:                 errors.New("Division by zero"),
+		wantErr:                 errors.New("division by zero"),
 		},
 	}
 	for _, test := range tests {
@@ -195,3 +203,4 @@ func TestDivideFoodSillyNephewError(t *testing.T) {
 		})
 	}
 }
+	
