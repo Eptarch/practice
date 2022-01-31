@@ -1,37 +1,32 @@
 package thefarm
 
-import (
-    "errors"
-    "fmt"
-)
+import "fmt"
 
-// Define the SillyNephewError type here.
+// Define the SillyNephewError type.
 type SillyNephewError struct {
-    arg int
+	cows int
 }
 
 func (e *SillyNephewError) Error() string {
-    return fmt.Sprintf("silly nephew, there cannot be %d cows", e.arg)
+	return fmt.Sprintf("silly nephew, there cannot be %d cows", e.cows)
 }
 
-// DivideFood computes the fodder amount per cow for the given cows.
+// DivideFood tries to split the fodder among the cows.
 func DivideFood(weightFodder WeightFodder, cows int) (float64, error) {
-
-    if cows == 0 {
-        return 0, errors.New("Division by zero")
-    } else if cows < 0 {
-        return 0, &SillyNephewError{arg: cows}
+	fodder, err := weightFodder.FodderAmount()
+    switch {
+        case fodder > 0 && err == ErrScaleMalfunction:
+	        return 2 * fodder / float64(cows), nil
+        case fodder < 0 && err == ErrScaleMalfunction:
+            return 0, fmt.Errorf("negative fodder")
+        case err != nil:
+	        return 0, err
+        case fodder < 0:
+            return 0, fmt.Errorf("negative fodder")
+        case cows == 0:
+            return 0, fmt.Errorf("division by zero")
+        case cows < 0:
+            return 0, &SillyNephewError{cows: cows}
     }
-
-    fodder, err := weightFodder.FodderAmount()
-    
-    if fodder < 0 {
-        return 0, errors.New("Negative fodder")
-    } else if err == ErrScaleMalfunction {
-        fodder *= 2
-    } else if err != nil {
-        return 0, err
-    }
-
     return fodder / float64(cows), nil
 }
