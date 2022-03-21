@@ -1,43 +1,101 @@
 package linkedlist
 
-// Define List and Node types here.
+import (
+	"errors"
+)
+
+var ErrEmptyList = errors.New("empty list")
+
+type List struct {
+    FirstNode *Node
+    LastNode *Node
+}
+
+type Node struct {
+    Val interface{}
+    NextNode *Node
+    PrevNode *Node
+}
 
 func NewList(args ...interface{}) *List {
-	panic("Please implement the NewList function")
+    l := List{}
+    for _, arg := range args {
+        l.PushBack(arg)
+    }
+    return &l
 }
 
 func (n *Node) Next() *Node {
-	panic("Please implement the Next function")
+	return n.NextNode
 }
 
 func (n *Node) Prev() *Node {
-	panic("Please implement the Prev function")
+    return n.PrevNode
 }
 
 func (l *List) PushFront(v interface{}) {
-	panic("Please implement the PushFront function")
+    var n = Node{Val: v}
+    if l.FirstNode != nil {
+        l.FirstNode.PrevNode = &n
+        n.NextNode = l.FirstNode
+    }
+    l.FirstNode = &n
+    if l.LastNode == nil {
+        l.LastNode = &n
+    }
 }
 
 func (l *List) PushBack(v interface{}) {
-	panic("Please implement the PushBack function")
+    var n = Node{Val: v}
+    if l.LastNode != nil {
+        l.LastNode.NextNode = &n
+        n.PrevNode = l.LastNode
+    }
+    l.LastNode = &n
+    if l.FirstNode == nil {
+        l.FirstNode = &n
+    }
 }
 
 func (l *List) PopFront() (interface{}, error) {
-	panic("Please implement the PopFront function")
+	if l.FirstNode == nil {
+        return nil, ErrEmptyList
+    }
+    n := l.FirstNode
+    l.FirstNode = l.FirstNode.NextNode
+    if l.FirstNode == nil {
+        l.LastNode = nil
+    } else {
+        l.FirstNode.PrevNode = nil
+    }
+    return n.Val, nil
 }
 
 func (l *List) PopBack() (interface{}, error) {
-	panic("Please implement the PopBack function")
+	if l.LastNode == nil {
+        return nil, ErrEmptyList
+    }
+    n := l.LastNode
+    l.LastNode = l.LastNode.PrevNode
+    if l.LastNode == nil {
+        l.FirstNode = nil
+    } else {
+        l.LastNode.NextNode = nil
+    }
+    return n.Val, nil
 }
 
 func (l *List) Reverse() {
-	panic("Please implement the Reverse function")
+    for e := l.LastNode; e != nil; e = e.NextNode {
+		e.PrevNode, e.NextNode = e.NextNode, e.PrevNode
+	}
+	l.FirstNode, l.LastNode = l.LastNode, l.FirstNode
 }
 
 func (l *List) First() *Node {
-	panic("Please implement the First function")
+	return l.FirstNode
 }
 
 func (l *List) Last() *Node {
-	panic("Please implement the Last function")
+	return l.LastNode
 }
