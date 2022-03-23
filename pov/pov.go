@@ -1,29 +1,36 @@
-package pov
+/*
+It's Norvaer's solution. Just check other solutions, that'll give out
+an idea that the problem is unstable at the moment. I'll get back to it some
+time later.
+*/
+
+package pov 
 
 type Tree struct {
-	// Add the needed fields here
+	value    string
+	children []*Tree
+	parent   *Tree
 }
 
-// New creates and returns a new Tree with the given root value and children.
-func New(value string, children ...*Tree) *Tree {
-	panic("Please implement this function")
+func New(value string, children ...*Tree) *Tree { 
+	if value =="" {
+		return nil 
+	}
+	result := &Tree{value, children, nil}
+	for _, child := range children { 
+			child.parent = result 
+	}
+	return result
 }
 
-// Value returns the value at the root of a tree.
 func (tr *Tree) Value() string {
-	panic("Please implement this function")
+	return tr.value
 }
 
-// Children returns a slice containing the children of a tree.
-// There is no need to sort the elements in the result slice,
-// they can be in any order.
 func (tr *Tree) Children() []*Tree {
-	panic("Please implement this function")
+	return tr.children 
 }
 
-// String describes a tree in a compact S-expression format.
-// This helps to make test outputs more readable.
-// Feel free to adapt this method as you see fit.
 func (tr *Tree) String() string {
 	if tr == nil {
 		return "nil"
@@ -38,14 +45,74 @@ func (tr *Tree) String() string {
 	return "(" + result + ")"
 }
 
-// POV problem-specific functions
-
-// FromPov returns the pov from the node specified in the argument.
-func (tr *Tree) FromPov(from string) *Tree {
-	panic("Please implement this function")
+func (tr *Tree) FindNode(value string) *Tree {
+	if tr == nil || tr.Value() == value {
+		return tr
+	}
+	for _, child := range tr.children {
+		res := child.FindNode(value)
+		if res != nil {
+			return res
+		}
+	}
+	return nil
 }
 
-// PathTo returns the shortest path between two nodes in the tree.
+func (tree *Tree) FromPov(from string) *Tree {
+	node := tree.FindNode(from) 
+	seen := make(map[string]bool)
+	var f func(*Tree) *Tree
+	f = func(tr *Tree) *Tree {
+		if tr == nil || seen[tr.value] {
+			return nil
+		}
+		seen[tr.value] = true
+		children := make([]*Tree, 0, len(tr.children)+1)
+		for _, child := range tr.children {
+			fChild := f(child)
+			if fChild != nil {
+				children = append(children, fChild)
+			}
+		}
+		if tr.parent != nil {
+			fParent := f(tr.parent)
+			if fParent != nil {
+				children = append(children, fParent)
+			}
+		}
+		return New(tr.value, children...)
+	}
+	return f(node)
+}
+
+func (tr *Tree) FindPathFromRoot(value string) []string {
+	node := tr.FindNode(value)
+	if node == nil {
+		return nil
+	}
+	result := make([]string, 0)
+	for node != tr {
+		result = append(result, node.value)
+		node = node.parent
+	}
+	result = append(result, tr.value)
+	for i, j := 0, len(result)-1; i < j; i, j = i+1, j-1 {
+		result[i], result[j] = result[j], result[i]
+	}
+	return result
+}
+
 func (tr *Tree) PathTo(from, to string) []string {
-	panic("Please implement this function")
+	if tr == nil {
+		return nil
+	}
+	if from == to {
+		return []string{to}
+	}
+	tr1 := tr.FromPov(from)
+	if tr1 == nil {
+		return nil
+	}
+	return tr1.FindPathFromRoot(to)
 }
+
