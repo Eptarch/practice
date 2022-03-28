@@ -1,11 +1,13 @@
-def round_scores(student_scores):
+from typing import Union
+
+def round_scores(student_scores: list[Union[int, float]]) -> list[int]:
     """"Round all provided student scores.
 
     :param student_scores: list of student exam scores as float or int.
     :return: list of student scores *rounded* to nearest integer value.
     """
 
-    pass
+    return [round(score) for score in student_scores]
 
 
 def count_failed_students(student_scores):
@@ -15,21 +17,23 @@ def count_failed_students(student_scores):
     :return: integer count of student scores at or below 40.
     """
 
-    pass
+    return sum(1 for score in student_scores if score <= 40)
 
 
 def above_threshold(student_scores, threshold):
-    """Determine how many of the provided student scores were 'the best' based on the provided threshold.
+    """Determine how many of the provided student scores were 'the best' based on the
+    provided threshold.
+
 
     :param student_scores: list of integer scores
     :param threshold :  integer
     :return: list of integer scores that are at or above the "best" threshold.
     """
 
-    pass
+    return [score for score in student_scores if score >= threshold]
 
 
-def letter_grades(highest):
+def letter_grades(highest: int) -> list[int]:
     """Create a list of grade thresholds based on the provided highest grade.
 
     :param highest: integer of highest exam score.
@@ -43,10 +47,10 @@ def letter_grades(highest):
              86 <= "A" <= 100
     """
 
-    pass
+    return list(range(41, highest, round((highest - 41) / 4)))
+    
 
-
-def student_ranking(student_scores, student_names):
+def student_ranking(student_scores, student_names) -> list[str]:
     """Organize the student's rank, name, and grade information in ascending order.
 
      :param student_scores: list of scores in descending order.
@@ -54,14 +58,20 @@ def student_ranking(student_scores, student_names):
      :return: list of strings in format ["<rank>. <student name>: <score>"].
      """
 
-    pass
+    return [
+        f"{rank + 1}. {student_names[rank]}: {student_scores[rank]}" for rank in range(
+            len(student_names)
+        )
+    ] 
 
 
-def perfect_score(student_info):
-    """Create a list that contains the name and grade of the first student to make a perfect score on the exam.
+def perfect_score(student_info: list[list[str, int]]) -> list[list[str, int]]:
+    """Create a list that contains the name and grade of the first student to make a
+    perfect score on the exam.
 
     :param student_info: list of [<student name>, <score>] lists
     :return: first `[<student name>, 100]` or `[]` if no student score of 100 is found.
     """
+    result = [x for x in student_info if x[1] == 100]
+    return result[0] if len(result) > 0 else []
 
-    pass
