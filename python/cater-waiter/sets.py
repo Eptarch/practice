@@ -1,13 +1,24 @@
-from sets_categories_data import (VEGAN,
-                                  VEGETARIAN,
-                                  KETO,
-                                  PALEO,
-                                  OMNIVORE,
-                                  ALCOHOLS,
-                                  SPECIAL_INGREDIENTS)
+from sets_categories_data import (
+    VEGAN,
+    VEGETARIAN,
+    KETO,
+    PALEO,
+    OMNIVORE,
+    ALCOHOLS,
+    SPECIAL_INGREDIENTS,
+)
 
+dish_categories = {
+    "VEGAN": VEGAN,
+    "VEGETARIAN": VEGETARIAN,
+    "KETO": KETO,
+    "PALEO": PALEO,
+    "OMNIVORE": OMNIVORE,
+    "ALCOHOLS": ALCOHOLS,
+    "SPECIAL_INGREDIENTS": SPECIAL_INGREDIENTS,
+}
 
-def clean_ingredients(dish_name, dish_ingredients):
+def clean_ingredients(dish_name: str, dish_ingredients: list[str]) -> tuple[str, set[str]]:
     """
 
     :param dish_name: str
@@ -18,10 +29,10 @@ def clean_ingredients(dish_name, dish_ingredients):
     followed by the de-duped `set` of ingredients as the second item.
     """
 
-    pass
+    return dish_name, set(dish_ingredients)
 
 
-def check_drinks(drink_name, drink_ingredients):
+def check_drinks(drink_name: str, drink_ingredients: list[str]) -> str:
     """
 
     :param drink_name: str
@@ -31,11 +42,14 @@ def check_drinks(drink_name, drink_ingredients):
     The function should return the name of the drink followed by "Mocktail" if the drink has
     no alcoholic ingredients, and drink name followed by "Cocktail" if the drink includes alcohol.
     """
+    
+    return drink_name + " Cocktail" if len(
+        set.intersection(set(drink_ingredients), ALCOHOLS)
+    ) > 0 else drink_name + " Mocktail"
+    
 
-    pass
 
-
-def categorize_dish(dish_name, dish_ingredients):
+def categorize_dish(dish_name: str, dish_ingredients: list[str]) -> str:
     """
 
     :param dish_name: str
@@ -47,10 +61,12 @@ def categorize_dish(dish_name, dish_ingredients):
     (VEGAN, VEGETARIAN, PALEO, KETO, or OMNIVORE).
     """
 
-    pass
+    for category in dish_categories:
+        if set(dish_ingredients).issubset(dish_categories[category]):
+            return f"{dish_name}: {category}"
 
 
-def tag_special_ingredients(dish):
+def tag_special_ingredients(dish: tuple[str, list[str]]) -> tuple[str, set[str]]:
     """
 
     :param dish: tuple of (str of dish name, list of dish ingredients)
@@ -61,10 +77,10 @@ def tag_special_ingredients(dish):
     SPECIAL_INGREDIENTS constant imported from `sets_categories_data.py`.
     """
 
-    pass
+    return dish[0], set.intersection(set(dish[1]), SPECIAL_INGREDIENTS)
 
 
-def compile_ingredients(dishes):
+def compile_ingredients(dishes: list[set[str]]) -> set:
     """
 
     :param dishes: list of dish ingredient sets
@@ -72,11 +88,12 @@ def compile_ingredients(dishes):
 
     This function should return a `set` of all ingredients from all listed dishes.
     """
+    
+    return set.union(*dishes) 
 
-    pass
+    
 
-
-def separate_appetizers(dishes, appetizers):
+def separate_appetizers(dishes: list[str], appetizers: list[str]) -> list[str]:
     """
 
     :param dishes: list of dish names
@@ -87,10 +104,10 @@ def separate_appetizers(dishes, appetizers):
     Either list could contain duplicates and may require de-duping.
     """
 
-    pass
+    return list(set(dishes) - set(appetizers))
 
 
-def singleton_ingredients(dishes, intersection):
+def singleton_ingredients(dishes: list[set[str]], intersection: set[str]) -> set[str]:
     """
 
     :param intersection: constant - one of (VEGAN_INTERSECTION,VEGETARIAN_INTERSECTION,PALEO_INTERSECTION,
@@ -103,4 +120,5 @@ def singleton_ingredients(dishes, intersection):
     The function should return a `set` of ingredients that only appear in a single dish.
     """
 
-    pass
+    return compile_ingredients(dishes) - intersection
+    
